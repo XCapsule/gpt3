@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OpenAI Completions</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        .input-box {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        #result-box {
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+            font-size: 1.2em;
+            text-align: left;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>OpenAI Completions</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="input-group">
+                    <input class="input-box" type="text" class="form-control" id="input-key" 
+                    autocomplete="on" placeholder="Enter key to complete...">
+                    <input class="input-box" type="text" class="form-control" id="input-box" placeholder="Enter text to complete...">
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="button" id="submit-btn">Submit</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div id="result-box"></div>
+            </div>
+        </div>
+    </div>
+    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+<script>
+  // VConsole will be exported to `window.VConsole` by default.
+  var vConsole = new window.VConsole();
+</script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+        $('#submit-btn').click(function(){
+            var inputText = $('#input-box').val();
+            var inputKey = $('#input-key').val();
+            $.ajax({
+                type: 'post',
+                url : 'https://api.openai.com/v1/completions',
+                contentType: 'application/json',
+                headers: {
+                    ContentType: 'application/json',
+                    Authorization: 'Bearer '+inputKey
+                },
+                dataType: 'json',
+                data: JSON.stringify({
+                    "model": "text-davinci-003",
+                    'prompt': inputText,
+                    'max_tokens': 3000,
+                    'temperature': 0.7,
+                    'top_p': 0.9
+                }),
+                success : function(data){
+                    var result = data.choices[0].text;
+                    $('#result-box').text(result);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
